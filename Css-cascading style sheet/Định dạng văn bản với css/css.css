@@ -1,0 +1,21 @@
+#content{
+    font-size: 13px;
+}
+#content-1{
+    font-size: 16px;
+    text-indent: 30px;
+
+}
+a{
+    text-decoration: none;
+}
+a.hover{
+    color: red;
+}
+a.visted{
+    color: deeppink;
+}
+#content-2{
+    font-size: 16px;
+    text-indent: 30px;
+}

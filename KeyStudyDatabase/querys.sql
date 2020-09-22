@@ -327,11 +327,162 @@ select nv.idNhanVien as id,nv.HoTen,nv.Email,nv.SDT,nv.NgaySinh,nv.DiaChi
 from nhanvien nv
 union all
 select kh.idKhachHang, kh.HoTen, kh.Email, kh.SDT, kh.NgaySinh, kh.DiaChi
-from khachhang kh
+from khachhang kh;
+
+/* 21.	Tạo khung nhìn có tên là V_NHANVIEN để lấy được thông tin của tất cả các nhân viên
+ có địa chỉ là “Hải Châu” và đã từng lập hợp đồng cho 1
+ hoặc nhiều Khách hàng bất kỳ  với ngày lập hợp đồng là “12/12/2019” */
+ /* cách 1 */
+ drop view if exists V_NHANVIEN;
+ create view V_NHANVIEN as 
+ select * from nhanvien nv where 
+ nv.diachi="Hải Châu" 
+ and 
+ exists (select * 
+ from hopdong hd where hd.nhanvien_idnhanvien = nv.idnhanvien and hd.ngaylamhopdong="2019-12-12");
+ select * from V_NHANVIEN;
+ /* cách 2 */
+ drop view if exists V_NHANVIEN;
+ create view V_NHANVIEN as 
+ select * from nhanvien nv where 
+ nv.diachi="Hải Châu" 
+ and nv.idnhanvien in (select hd.nhanvien_idnhanvien from hopdong hd where hd.nhanvien_idnhanvien=nv.idnhanvien);
+ 
+ /* 22.	Thông qua khung nhìn V_NHANVIEN thực hiện cập nhật địa chỉ thành “Liên Chiểu”
+ đối với tất cả các Nhân viên được nhìn thấy bởi khung nhìn này. */
+ update V_NHANVIEN  set V_NHANVIEN.diachi="Liên Chiểu";
+ 
+ /* 23.	Tạo Store procedure Sp_1 Dùng để xóa thông tin của một Khách hàng nào đó
+ với Id Khách hàng được truyền vào như là 1 tham số của Sp_1 */
+ delimiter //
+ drop procedure if exists sp_1 //
+ create procedure sp_1(idkhachhang int)
+ begin
+ delete from khachhang where khachhang.idkhachhang=idkhachhang ;
+ end // 
+ delimiter ;
+call sp_1(1);
+/* 24.	Tạp Store procedure Sp_2 Dùng để thêm mới vào bảng HopDong với yêu cầu Sp_2 
+phải thực hiện kiểm tra tính hợp lệ của dữ liệu bổ sung,
+ với nguyên tắc không được trùng khó chính và đảm bảo toàn vẹn tham chiếu đến các bảng liên quan.
+ */
+ delimiter //
+ drop procedure if exists sp_2 //
+ create procedure sp_2(in id_hd int,in id_nv int,in id_dv int,in ngaylam_hd date,
+ in ngay_kt varchar(45),in tien_dat_coc double,in tongtien double)
+ begin
+	declare mesages varchar(255) ;
+	if not exists (select idhopdong	 from hopdong where hopdong.idhopdong=id_hd) then
+		set mesages="đã tồn tại primary key";
+	elseif not exists (select idnhanvien from nhanvien where nhanvien.idnhanvien=id_nv) then
+		set mesages="không tồn tại id của nhân viên trong bảng nhân viên";
+	elseif not exists (select iddichvu from dichvu where dichvu.iddichvu=id_dv)  then 
+		set mesages="không tồn tại id trong bang dich vu ";
+	else 
+	set mesages="ok";
+	insert into hopdong(idHopdong,nhanvien_idnhanvien,khachhang_idkhachhang,dichvu_iddichvu,ngaylamhopdong,
+	ngayketthuc,tiendatcoc,tongtien) values(id_hd,id_nv,id_dv,ngaylam_hd,ngay_kt,tien_dat_coc,tongtien);
+	end if;
+	select mesages;
+ end //
+ delimiter ;
+ call sp_2(1,1,333,"2000-02-02","2020-02-09",33,33);
+ 
+ select * from hopdong
+ /* 25.	Tạo triggers có tên Tr_1 Xóa bản ghi trong bảng HopDong thì hiển thị tổng số 
+ lượng bản ghi còn lại có trong bảng HopDong ra giao diện console của database */
 
 
+ /* 26.	Tạo triggers có tên Tr_2 Khi cập nhật Ngày kết thúc hợp đồng, cần kiểm tra
+ xem thời gian cập nhật có phù hợp hay không, với quy tắc sau: Ngày kết thúc hợp đồng phải lớn hơn
+ ngày làm hợp đồng ít nhất là 2 ngày. Nếu dữ liệu hợp lệ thì cho phép cập nhật, nếu dữ liệu không
+ hợp lệ thì in ra thông báo
+ “Ngày kết thúc hợp đồng phải lớn hơn ngày làm hợp đồng ít nhất là 2 ngày” trên console của database
+ */
+ 
+ /* 27.	Tạo user function thực hiện yêu cầu sau:
+a.	Tạo user function func_1: Đếm các dịch vụ đã được sử dụng với Tổng tiền là > 2.000.000 VNĐ.
+b.	Tạo user function Func_2: Tính khoảng thời gian dài nhất tính từ lúc bắt đầu làm hợp đồng đến
+ lúc kết thúc hợp đồng mà Khách hàng đã thực hiện thuê dịch vụ (lưu ý chỉ xét các khoảng thời gian 
+ dựa vào từng lần làm hợp đồng thuê dịch vụ, không xét trên toàn bộ các lần làm hợp đồng). 
+ Mã của Khách hàng được truyền vào như là 1 tham số của function này. */
+ delimiter //
+drop function if exists func_1 //
+create function func_1()
+returns int
+reads sql data
+ begin
+ declare tong int default 0;
+ select count(hd.idhopdong) into tong 
+ from hopdong hd
+ where hd.tongtien > 2000000
+ group by dichvu_iddichvu;
+ return tong;
+ end // 
+ delimiter ;
+ select func_1() as tinhtong;
+ 
+ delimiter //
+ drop function if exists Func_2 //
+ create function Func_2(id_khachhang int)
+ returns int
+ reads sql data
+ begin
+	declare maxday int;
+	select max(datediff(ngayketthuc,ngaylamhopdong)) into maxday
+	from hopdong hd
+	inner join khachhang kh on kh.idkhachhang=hd.khachhang_idkhachhang
+	inner join dichvu dv on hd.dichvu_iddichvu=dv.iddichvu
+	where idkhachhang=id_khachhang;
+    return maxday;
+ end //
+ delimiter ;
+ select Func_2(2);
+ 
+/*
+28.	Tạo Store procedure Sp_3 để tìm các dịch vụ được thuê bởi khách hàng với loại dịch vụ 
+là “Room” từ đầu năm 2015 đến hết năm 2019 để xóa thông tin của các dịch vụ đó (tức là xóa các bảng ghi 
+trong bảng DichVu) và xóa những HopDong sử dụng dịch vụ 
+liên quan (tức là phải xóa những bản gi trong bảng HopDong) và những bản liên quan khác.
+*/
+ delimiter //
+ drop procedure if exists Sp_3 //
+ create procedure Sp_3()
+ begin
+	delete from hopdongchitiet 
+		where hopdongchitiet.hopdong_idhopdong =any(select idhopdong from hopdong
+		where hopdong.dichvu_iddichvu=( select * from (select distinct iddichvu
+		from (hopdong hd
+		inner join khachhang kh on kh.idkhachhang=hd.khachhang_idkhachhang
+		inner join dichvu dv on hd.dichvu_iddichvu=dv.iddichvu
+		inner join loaidichvu on dv.loaidichvu_idloaidichvu=loaidichvu.idloaidichvu) 
+		where year(ngayketthuc) between '2015' and '2019' and tenloaidichvu='room') tbl_delete));
+   
+ delete from hopdong 
+	where dichvu_iddichvu=any(select * from (
+		select distinct iddichvu
+		from hopdong hd
+		inner join khachhang kh on kh.idkhachhang=hd.khachhang_idkhachhang
+		inner join dichvu dv on hd.dichvu_iddichvu=dv.iddichvu
+		inner join loaidichvu on dv.loaidichvu_idloaidichvu=loaidichvu.idloaidichvu 
+		where year(ngayketthuc) between '2015' and '2019' and tenloaidichvu='room') tbl_d);
+    
+ delete from dichvu
+	where iddichvu=(select *
+		from (select distinct iddichvu
+		from hopdong hd
+		inner join khachhang kh on kh.idkhachhang=hd.khachhang_idkhachhang
+		inner join dichvu dv on hd.dichvu_iddichvu=dv.iddichvu
+		inner join loaidichvu on dv.loaidichvu_idloaidichvu=loaidichvu.idloaidichvu
+		where year(ngayketthuc) between '2015' and '2019' and tenloaidichvu='room') tbl_delete);
 
+ end //
+ delimiter ;
+ call Sp_3();
 
+ 
+ 
+ 
 
 
 
