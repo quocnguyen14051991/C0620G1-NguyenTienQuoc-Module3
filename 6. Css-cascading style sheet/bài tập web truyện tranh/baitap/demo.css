@@ -1,0 +1,117 @@
+body {
+    margin: 0px;
+}
+
+#header {
+    top: 0px;
+    height: 100px;
+    width: 100%;
+    background: #efd56f;
+}
+
+#header-link {
+    background-color: rgb(178, 184, 184);
+    padding: 1%;
+    text-align: center;
+    border-radius: 5px;
+}
+
+#left {
+    position: relative;
+    top: 10px;
+    float: left;
+    background: #8cec8c;
+    width: 200px;
+    height: 100%;
+}
+
+.content {
+    background-color: rgb(211, 202, 202);
+    height: 100%;
+    margin-left: 210px;
+    margin-top: 10px;
+}
+
+/*#truyen {*/
+/*    display: inline-block;*/
+/*    margin: 10px;*/
+/*}*/
+#truyen2
+{
+    display: inline-block;
+    float : right;
+    margin: 10px;
+}
+#truyen1{
+    float: left;
+    margin: 10px;
+}
+#text2 {
+    text-align: center;
+}
+
+#right {
+    position: relative;
+    background: #dbe6db;
+    float: right;
+    width: 200px;
+    height: 400px;
+    top: 10px;
+}
+
+#text {
+    float: right;
+    margin: 20px;
+}
+
+
+#banner {
+    position: relative;
+    float: right;
+    width: 77%;
+    height: 80px;
+    right: 20px;
+}
+
+#logo {
+    position: relative;
+    float: left;
+    width: 20%;
+    height: 80px;
+    background-size: 100% 100%;
+}
+
+.home {
+    background-color: orangered;
+    text-shadow: aliceblue;
+    padding: 1%;
+    padding-left: 2%;
+    padding-right: 2%;
+    border-radius: 7px;
+    color: #dbe6db;
+}
+
+a {
+    margin: 50px;
+    color: black;
+    font-size: 20px;
+}
+
+h5 {
+    margin: 20px;
+    margin-left: 50px;
+    font-size: large;
+}
+
+p {
+    margin-left: 10px;
+}
+
+span {
+    float: left;
+    margin: 20px;
+    color: #dbe6db;
+}
+a{
+    text-decoration: none;
+}

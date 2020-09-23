@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>reposiveGridview</title>
+    <style>
+        *{
+            box-sizing: border-box;
+
+        }
+        html{
+            font-family: "Lucida Sans", sans-serif;
+        }
+        .head
+        {
+            background: #481964;
+            color: #cccccc;
+            padding: 15px;
+            width: 100%;
+        }
+        .row{
+
+        }
+        [class*="col-"]
+        {
+            float: left;
+            padding: 15px;
+        }
+        .menu{
+            width: 25%;
+
+        }
+        .main{
+            width: 75%;
+        }
+        div{
+            display: block;
+        }
+        menu ul{
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        .menu li{
+            padding: 8px;
+            margin-bottom: 7px;
+            background-color: cadetblue;
+            color: white;
+            box-shadow: #cccccc;
+        }
+        .menu li:hover
+        {
+            background-color: #0099cc;
+        }
+    </style>
+</head>
+<body>
+<div class="head">
+    <h1> Nguyễn Tiến Quốc</h1>
+
+</div>
+<div class="row">
+    <div class="col-3 menu">
+<ul>
+    <li>The Flight</li>
+    <li>The City</li>
+    <li>The Island</li>
+    <li>The Food</li>
+</ul>
+    </div>
+    <div class="col-9 main">
+        <h1>The City</h1>
+<p> Chania is the capital of the Chania region on the island of Crete. The city can be divided in two parts, the old town and the modern city.
+
+    Resize the browser window to see how the content respond to the resizing.</p>
+    </div>
+</div>
+</body>
+</html>

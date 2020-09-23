@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>thực hành tạo bố cục đơn giản</title>
+    <style>
+        body {
+            font-family: "Lucida Sans", sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        #main {
+            width: 100%;
+        }
+
+        #head {
+            height: 150px;
+            background-color: #cccccc;
+            border: 1px black solid;
+            margin-bottom: 5px;
+            color: red;
+            text-align: center;
+
+        }
+
+        #headlink {
+            height: 75px;
+            background-color: #cccccc;
+            border: 1px black solid;
+            margin-bottom: 5px;
+            color: red;
+            text-align: center;
+        }
+
+        [class*="col-"] {
+            float: left;
+            padding: 15px;
+        }
+
+        .row::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .left {
+            width: 24%;
+            min-height: 400px;
+            background-color: #481964;
+            margin-right: 5px;
+        }
+
+        .right {
+            margin-left: 5px;
+            width: 24%;
+            min-height: 400px;
+            background-color: #cc0000;
+        }
+
+        .content {
+            border: 1px black solid;
+            width: 50%;
+            min-height: 400px;
+            /*margin-left: 5px;*/
+            /*margin-right: 5px;*/
+        }
+
+        .row {
+            background-color: #cccccc;
+            margin-bottom: 5px;
+            padding: 15px;
+            width: 100%;
+            display: inline-block;
+        }
+        #footer{
+            height: 100px;
+            background-color: #0099cc;
+        }
+        @media only screen and (max-width: 500px ){
+            [class*="col-"]{
+                width: 100%;
+            }
+
+        }
+    </style>
+</head>
+<body>
+<div id="main">
+    <div id="head">
+
+    </div>
+    <div id="headlink">
+
+    </div>
+    <div class="row">
+        <div class=" col-3 left">
+        </div>
+        <div class="col-6 content">
+
+        </div>
+        <div class="col-3 right">
+
+        </div>
+    </div>
+</div>
+<div id="footer">
+
+</div>
+</div>
+</body>
+</html>
