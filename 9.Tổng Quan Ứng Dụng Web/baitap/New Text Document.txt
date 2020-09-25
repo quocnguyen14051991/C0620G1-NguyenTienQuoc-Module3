@@ -1,0 +1,9 @@
+<form action="calculateServlet" method="post">
+    <%--@declare id="name"--%><label for="name">Hello</label>
+    <input type="text" style="margin-left: 200px"><br>
+    <%--@declare id="name"--%><label for="name">Hello</label>
+    <input type="text" style="margin-left: 200px"><br>
+    <%--@declare id="name"--%><label for="name">Hello</label>
+    <input type="text" style="margin-left: 200px"><br>
+    <input type="submit">
+</form>

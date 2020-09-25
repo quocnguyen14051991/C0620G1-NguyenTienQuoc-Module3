@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="P_Discount_Calculator_App:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/P_Discount_Calculator_App_war_exploded</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="P_Discount_Calculator_App" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="P_Discount_Calculator_App/web/Web" />
+    </root>
+  </artifact>
+</component>
