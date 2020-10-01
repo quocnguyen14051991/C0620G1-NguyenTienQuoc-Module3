@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Cac Library Thong Dung">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../../../../../LiBrary/Cac Library Thong Dung" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../../../../../LiBrary/Cac Library Thong Dung" recursive="false" />
+  </library>
+</component>
