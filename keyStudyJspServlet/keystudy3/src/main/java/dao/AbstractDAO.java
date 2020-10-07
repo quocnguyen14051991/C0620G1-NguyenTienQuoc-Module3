@@ -1,4 +1,5 @@
 package dao;//import dao.BaseDAO;
+
 import dao.GenericDAO;
 import rowmapper.RowMapper;
 
@@ -9,6 +10,7 @@ import java.util.List;
 
 public class AbstractDAO<T> implements GenericDAO<T> {
     BaseDAO baseDAO = new BaseDAO();
+
     @Override
     public <T> List<T> query(String sql, RowMapper<T> rowMapper, Object... parameters) {
         List<T> results = new ArrayList<>();
@@ -19,11 +21,10 @@ public class AbstractDAO<T> implements GenericDAO<T> {
         try {
             preparedStatement = connection.prepareStatement(sql);
             setParameter(preparedStatement, parameters);
-           /* con 1 buoc setparam cho preparedStatement; */
+            /* con 1 buoc setparam cho preparedStatement; */
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 results.add(rowMapper.mapRow(resultSet));
-
             }
             return results;
         } catch (SQLException throwables) {
@@ -121,6 +122,24 @@ public class AbstractDAO<T> implements GenericDAO<T> {
         return rowUpdate;
     }
 
+    @Override
+    public int sumRecord(String sql) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = baseDAO.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     private void setParameter(PreparedStatement statement, Object[] parameters) {
         try {
             for (int i = 0; i < parameters.length; i++) {
@@ -130,6 +149,8 @@ public class AbstractDAO<T> implements GenericDAO<T> {
                     statement.setInt(index, (Integer) parameter);
                 } else if (parameter instanceof String) {
                     statement.setString(index, (String) parameter);
+                }else if(parameter instanceof Double){
+                    statement.setDouble(index,(Double) parameter);
                 }
             }
         } catch (SQLException e) {

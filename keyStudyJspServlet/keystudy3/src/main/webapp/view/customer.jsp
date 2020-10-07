@@ -12,6 +12,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+    <script type="text/javascript" src="//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"> </script>
+
+
 
     <style>
         body {
@@ -19,6 +24,10 @@
             background: #f5f5f5;
             font-family: 'Varela Round', sans-serif;
             font-size: 13px;
+        }
+
+        #formSearch {
+            display: inline;
         }
 
         .table-responsive {
@@ -283,31 +292,33 @@
             font-weight: normal;
         }
     </style>
-<%--    <script>--%>
-<%--        $(document).ready(function () {--%>
-<%--            // Activate tooltip--%>
-<%--            $('[data-toggle="tooltip"]').tooltip();--%>
+    <script>
+        $(document).ready(function () {
 
-<%--            // Select/Deselect checkboxes--%>
-<%--            var checkbox = $('table tbody input[type="checkbox"]');--%>
-<%--            $("#selectAll").click(function () {--%>
-<%--                if (this.checked) {--%>
-<%--                    checkbox.each(function () {--%>
-<%--                        this.checked = true;--%>
-<%--                    });--%>
-<%--                } else {--%>
-<%--                    checkbox.each(function () {--%>
-<%--                        this.checked = false;--%>
-<%--                    });--%>
-<%--                }--%>
-<%--            });--%>
-<%--            checkbox.click(function () {--%>
-<%--                if (!this.checked) {--%>
-<%--                    $("#selectAll").prop("checked", false);--%>
-<%--                }--%>
-<%--            });--%>
-<%--        });--%>
-<%--    </script>--%>
+
+            // Activate tooltip
+            $('[data-toggle="tooltip"]').tooltip();
+
+            // Select/Deselect checkboxes
+            var checkbox = $('table tbody input[type="checkbox"]');
+            $("#selectAll").click(function () {
+                if (this.checked) {
+                    checkbox.each(function () {
+                        this.checked = true;
+                    });
+                } else {
+                    checkbox.each(function () {
+                        this.checked = false;
+                    });
+                }
+            });
+            checkbox.click(function () {
+                if (!this.checked) {
+                    $("#selectAll").prop("checked", false);
+                }
+            });
+        });
+    </script>
 </head>
 <body>
 <div class="container-fluid">
@@ -315,10 +326,24 @@
         <div class="table-wrapper">
             <div class="table-title">
                 <div class="row">
-                    <div class="col-xs-6">
-                        <h2>Manage <b>Employees</b></h2>
+                    <div class="col-xs-8">
+                        <div class="row">
+                            <div class="col-xs-5"><h2>Manage <b>Customer</b></h2>
+                            </div>
+                            <div class="col-xs-7"><!-- Search form -->
+                                <form class="form-inline d-flex justify-content-center md-form form-sm active-cyan active-cyan-2 mt-2" >
+                                    <input type="hidden" name="action" value="search">
+                                    <div class="row">
+                                        <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search" name="valueSearch"
+                                               aria-label="Search" style="width: 80%">
+                                        <button type="submit" class="btn btn-primary" style="margin-left: 3px">Search</button>
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-xs-6">
+                    <div class="col-xs-4">
                         <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i
                                 class="material-icons">&#xE147;</i> <span>Add New Employee</span></a>
                         <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"
@@ -331,7 +356,7 @@
                 <thead>
                 <tr>
                     <th>
-								<span class="custom-checkbox">
+                        <span class="custom-checkbox">
 									<input type="checkbox" id="selectAll">
 									<label for="selectAll"></label>
 								</span>
@@ -349,12 +374,13 @@
                 <tbody>
                 <c:forEach var="customer" items="${customerList}">
                     <tr>
-                        <td>
-								<span class="custom-checkbox">
-									<input type="checkbox${customer.customerId}" name="checkboxCustomer" value="${customer.customerId}">
-									<label for="checkbox${customer.customerId}"></label>
-								</span>
-                        </td>
+                        <td><span class="custom-checkbox">
+									<input type="checkbox" id="checkbox1" name="checkboxCustomer"
+                                           value="${customer.customerId}">
+									<label for="checkbox1"></label>
+								</span></td>
+
+
                         <td>${customer.customerId}</td>
                         <td>${customer.customerName}</td>
                         <td>${customer.customerBirthDay}</td>
@@ -383,12 +409,14 @@
             <div class="clearfix">
                 <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
                 <ul class="pagination">
-                    <li class="page-item disabled"><a href="#">Previous</a></li>
-                    <li class="page-item"><a href="#" class="page-link">1</a></li>
-                    <li class="page-item"><a href="#" class="page-link">2</a></li>
-                    <li class="page-item active"><a href="#" class="page-link">3</a></li>
-                    <li class="page-item"><a href="#" class="page-link">4</a></li>
-                    <li class="page-item"><a href="#" class="page-link">5</a></li>
+                    <li class="page-item ">
+                        <a href="#">Previous</a>
+                    </li>
+                    <c:forEach begin="1" end="${endPage}" var="i">
+                        <li class="page-item">
+                            <a id="${i}" href="/customer?action=pagination&page_index=${i}" class="page-link">${i}</a>
+                        </li>
+                    </c:forEach>
                     <li class="page-item"><a href="#" class="page-link">Next</a></li>
                 </ul>
             </div>
@@ -463,7 +491,6 @@
 <!-- Edit Modal HTML -->
 
 
-
 <div id="editEmployeeModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -525,7 +552,6 @@
 </div>
 
 
-
 <!-- Delete Modal HTML -->
 <div id="deleteEmployeeModal" class="modal fade">
     <div class="modal-dialog">
@@ -549,6 +575,10 @@
     </div>
 </div>
 <script>
+    $(document).ready( function () {
+        $('#myTable').DataTable();
+    } );
+    document.getElementById('${i}').style.color = "red";
 
     function setID(id) {
         document.getElementById("idCustomer").value = id;
@@ -563,8 +593,8 @@
         document.getElementById("phone").value = phone;
         document.getElementById("email").value = email;
         document.getElementById("address").value = address;
-        alert(id);
     }
+
 </script>
 </body>
 </html>

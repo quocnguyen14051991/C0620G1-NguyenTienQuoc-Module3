@@ -14,5 +14,7 @@ public interface GenericDAO<T> {
 
     /* common cho Update */
     boolean update(String sql, Object... parameter);
+    /* sum record Pagenation */
+    int sumRecord(String sql);
 
 }

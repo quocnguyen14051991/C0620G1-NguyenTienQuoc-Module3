@@ -5,6 +5,7 @@ import dao.CustomerDAOImpl;
 import model.Customer;
 import model.TypeOfCustomer;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class CustomerBOImpl implements CustomerBO {
@@ -36,6 +37,21 @@ public class CustomerBOImpl implements CustomerBO {
     @Override
     public boolean editCustomer(Customer customer) {
         return customerDAO.editCustomer(customer);
+    }
+
+    @Override
+    public int endPage(int numRecord) {
+        return customerDAO.endPage(numRecord);
+    }
+
+    @Override
+    public List<Customer> recordForPage(int numRecord, int pageIndex) {
+        return customerDAO.recordForPage(numRecord,pageIndex);
+    }
+
+    @Override
+    public List<Customer> findName(String name) throws SQLException  {
+        return customerDAO.findName(name);
     }
 
 }
